@@ -1,8 +1,8 @@
 {
-  "name": "pair-code",
+  "name": "code-rendezvous",
   "type": "module",
   "version": "1.0.0",
-  "description": "Pair coding editor",
+  "description": "A place to code together",
   "scripts": {
     "build": "rollup -c",
     "start": "tsc && node out/backend.js"
