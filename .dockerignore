@@ -1,0 +1,11 @@
+.DS_Store
+.vscode
+.git
+.gitignore
+.dockerignnore
+Dockerfile
+node_modules
+out
+deploy
+public/bundle.*
+README.md

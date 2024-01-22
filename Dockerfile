@@ -1,19 +1,13 @@
-# Specify the base image
-FROM node:20.10
+FROM node:20-slim AS build
+WORKDIR /build
+COPY . ./
+RUN npm install && npm run build && npx tsc && rm -r node_modules
 
-# Set the working directory inside the container
-WORKDIR /app
-
-# Copy package.json and package-lock.json to the working directory
-COPY *.js* ./
-RUN npm install
-COPY src ./src
-COPY public ./public
-RUN ls -laR
-RUN npm run build
-
-# Expose a port (if needed)
+FROM node:20-slim
+USER node
+WORKDIR /usr/src/app
+ENV NODE_ENV=production
+COPY --chown=node:node --from=build /build ./
+RUN npm ci --only=production
 EXPOSE 3000
-
-# Start the application
-CMD [ "npm", "start" ]
+CMD [ "node", "out/backend.js" ]
