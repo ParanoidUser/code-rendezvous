@@ -22,7 +22,7 @@ $(function () {
     socket.onmessage = function (event) {
         var message = JSON.parse(event.data);
         console.log('Message received:', message);
-        $('#messageDiv').html("Users connected: " + message.connections);
+        $('#messageDiv').html("Users: " + message.connections);
 
         const strState = JSON.stringify(message.state);
 

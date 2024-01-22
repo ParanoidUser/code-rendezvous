@@ -1,4 +1,6 @@
 TODO:
 
 * session expiration and channels cleanup (front and back)
-* docker
+* clean up logging
+* html pages
+* link to home page from editor
