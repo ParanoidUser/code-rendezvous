@@ -9,7 +9,7 @@ const STATE = {
 };
 
 $(function () {
-    const socket = new WebSocket('ws://' + window.location.host + window.location.pathname);
+    const socket = new WebSocket(window.location.href.replace('http', 'ws'));
     const editor = new EditorView({
         extensions: [basicSetup, java()],
         parent: $('#editor')[0]
@@ -22,7 +22,7 @@ $(function () {
     socket.onmessage = function (event) {
         var message = JSON.parse(event.data);
         console.log('Message received:', message);
-        $('#messageDiv').html("Users: " + message.connections);
+        $('#messageDiv').html("Coders: " + message.connections);
 
         const strState = JSON.stringify(message.state);
 
@@ -70,7 +70,7 @@ $(function () {
 
     setInterval(() => {
         const strState = JSON.stringify(editor.state.toJSON());
-        if (STATE.reported !== strState) {
+        if (STATE.reported !== strState && socket.readyState === socket.OPEN) {
             console.log('Sending state:', strState);
             socket.send(strState);
             STATE.reported = strState;

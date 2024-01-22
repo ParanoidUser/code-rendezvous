@@ -1,10 +1,15 @@
 import * as WebSocket from 'ws';
 
+interface Range {
+    anchor: number;
+    head: number;
+}
+
 interface State {
     doc: string;
     selection: {
-        anchor: number;
-        head: number;
+        ranges: Range[];
+        main: number;
     };
 }
 
@@ -44,8 +49,11 @@ class Channel {
     private state: State = {
         doc: "",
         selection: {
-            anchor: 0,
-            head: 0
+            ranges: [{
+                anchor: 0,
+                head: 0
+            }],
+            main: 0
         }
     };
 
