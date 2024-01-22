@@ -21,7 +21,7 @@ $(function () {
 
     socket.onmessage = function (event) {
         var message = JSON.parse(event.data);
-        console.log('Message received:', message);
+        //console.log('Message received:', message);
         $('#messageDiv').html("Coders: " + message.connections);
 
         const strState = JSON.stringify(message.state);
@@ -71,7 +71,7 @@ $(function () {
     setInterval(() => {
         const strState = JSON.stringify(editor.state.toJSON());
         if (STATE.reported !== strState && socket.readyState === socket.OPEN) {
-            console.log('Sending state:', strState);
+            //console.log('Sending state:', strState);
             socket.send(strState);
             STATE.reported = strState;
         }
