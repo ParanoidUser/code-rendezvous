@@ -5,7 +5,7 @@
   "description": "A place to code together",
   "scripts": {
     "build": "rollup -c",
-    "start": "tsc && node out/backend.js"
+    "start": "rm -r out && tsc && node out/backend/backend.js"
   },
   "dependencies": {
     "@codemirror/lang-java": "^6.0.1",

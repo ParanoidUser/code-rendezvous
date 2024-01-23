@@ -14,7 +14,8 @@ const wss = new WebSocket.WebSocketServer({ server: server });
 const channelManager = new ChannelManager(wss);
 
 // Serve static files from the "public" directory
-app.use(express.static(path.join(__dirname, '../public')));
+const publicDir = path.join(__dirname, '../../public');
+app.use(express.static(publicDir));
 
 app.get('/start', function(req, res) {
     const id = channelManager.createChannel();
@@ -24,9 +25,9 @@ app.get('/start', function(req, res) {
 app.get('/:id', function(req, res) {
     const id = req.params.id;
     if(!channelManager.channelExists(id)) {
-        return res.status(404).sendFile(path.join(__dirname, `../public/404.html`));
+        return res.status(404).sendFile(path.join(publicDir, `404.html`));
     }
-    res.sendFile(path.join(__dirname, `../public/editor.html`));
+    res.sendFile(path.join(publicDir, `editor.html`));
 });
 
 // Start the server

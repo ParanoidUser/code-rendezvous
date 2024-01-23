@@ -1,46 +1,27 @@
 import * as WebSocket from 'ws';
-
-interface Range {
-    anchor: number;
-    head: number;
-}
-
-interface State {
-    doc: string;
-    selection: {
-        ranges: Range[];
-        main: number;
-    };
-}
-
-interface StatusMessage {
-    state: State;
-    connections: number;
-}
+import { State } from '../protocol.js';
+import { MessageSender } from './wssender.js';
 
 class SocketWrapper {
     private socket: WebSocket;
     private channel: Channel;
+    readonly sender: MessageSender;
 
     constructor(socket: WebSocket, channel: Channel) {
         this.socket = socket;
         this.channel = channel;
+        this.sender = new MessageSender(socket);
         this.socket.on('message', this.processMessage.bind(this));
         this.socket.on('close', this.onClose.bind(this));
     }
 
     processMessage(message: WebSocket.RawData) {
         const messageString = message.toString();
-        console.log('received: %s', messageString);
         this.channel.setState(this, messageString);
     }
 
     onClose() {
         this.channel.removeSocket(this);
-    }
-
-    send(message: StatusMessage) {
-        this.socket.send(JSON.stringify(message));
     }
 }
 
@@ -60,7 +41,9 @@ class Channel {
     addSocket(socket: WebSocket) {
         const wrapper = new SocketWrapper(socket, this);
         this.sockets.push(wrapper);
-        wrapper.send({ state: this.state, connections: this.sockets.length });
+        wrapper.sender.sendInitMessage();
+        wrapper.sender.sendConnectionsMessage(this.sockets.length);
+        wrapper.sender.sendStateMessage(this.state);
     }
 
     setState(source: SocketWrapper, state: string) {
@@ -68,13 +51,16 @@ class Channel {
         this.state = parsedState;
         this.sockets.forEach(socket => {
             if (socket !== source) {
-                socket.send({ state: parsedState, connections: this.sockets.length });
+                socket.sender.sendStateMessage(parsedState);
             }
         });
     }
 
     removeSocket(socket: SocketWrapper) {
         this.sockets = this.sockets.filter(s => s !== socket);
+        this.sockets.forEach(socket => {
+            socket.sender.sendConnectionsMessage(this.sockets.length);
+        });
     }
 }
 
@@ -88,21 +74,16 @@ export class ChannelManager {
     }
 
     onConnection(ws: WebSocket, req: any) {
-        console.log("Connected " + req.url);
         const channelId = req.url.split('/')[1];
         const channel = this.channels[channelId];
         if (channel) {
             channel.addSocket(ws);
+            console.log("Connected " + req.url);
         } else {
+            new MessageSender(ws).sendFailureMessage("Channel not found");
             ws.close();
+            console.log("Failed connection attempt to " + req.url);
         }
-
-        // ws.on('message', (message: WebSocket.RawData) => {
-        //     const messageString = message.toString();
-        //     console.log('received: %s', messageString);
-        // });
-
-        // ws.send('something');
     }
 
     createChannel(): string {

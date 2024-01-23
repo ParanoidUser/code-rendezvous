@@ -20,7 +20,7 @@ export default {
         cssnano()
       ]
     }),
-    typescript({tsconfigOverride: {include: ["src/frontend/**/*"]}}), 
+    typescript({tsconfigOverride: {"exclude": ["node_modules", "src/backend/**/*"]}}), 
     resolve(), // For resolving node_modules
     commonjs(), // Convert CommonJS modules to ES6
     babel({ // Transpile to ES5
