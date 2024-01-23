@@ -2,7 +2,9 @@ import $ from 'jquery';
 import 'bootstrap';
 import './styles.css';
 import { StatusMessage, State } from '../protocol.js';
-import { EditorView, basicSetup } from "codemirror"
+import {basicSetup} from "codemirror"
+import {EditorView, keymap} from "@codemirror/view"
+import {indentWithTab} from "@codemirror/commands"
 import { java } from "@codemirror/lang-java"
 
 class WindowState {
@@ -27,7 +29,7 @@ class WindowState {
     createEditor() {
         if (!this.editor) {
             this.editor = new EditorView({
-                extensions: [basicSetup, java()],
+                extensions: [basicSetup, keymap.of([indentWithTab]), java()],
                 parent: $('#editor')[0]
             });
             $('#loading').hide();
@@ -107,7 +109,7 @@ class SocketHolder {
 
     onMessage(event: MessageEvent) {
         const message: StatusMessage = JSON.parse(event.data);
-        console.log('Received:', message);
+        //console.log('Received:', message);
 
         if (message.type === 'init') {
             this.windowState.createEditor();
