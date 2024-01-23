@@ -42,10 +42,9 @@ class Channel {
         }
     };
 
-    private lastUpdateTimestamp: number = 0;
+    private lastUpdateTimestamp: number = Date.now();
 
     addSocket(socket: WebSocket) {
-        this.lastUpdateTimestamp = Date.now();
         const wrapper = new SocketWrapper(socket, this);
         this.sockets.push(wrapper);
         wrapper.sender.sendInitMessage();
@@ -65,7 +64,6 @@ class Channel {
     }
 
     removeSocket(socket: SocketWrapper) {
-        this.lastUpdateTimestamp = Date.now();
         this.sockets = this.sockets.filter(s => s !== socket);
         this.notifyAllConnections();
     }
