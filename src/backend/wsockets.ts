@@ -49,8 +49,8 @@ class Channel {
         const wrapper = new SocketWrapper(socket, this);
         this.sockets.push(wrapper);
         wrapper.sender.sendInitMessage();
-        wrapper.sender.sendConnectionsMessage(this.sockets.length);
         wrapper.sender.sendStateMessage(this.state);
+        this.notifyAllConnections();
     }
 
     setState(source: SocketWrapper, state: string) {
@@ -67,6 +67,10 @@ class Channel {
     removeSocket(socket: SocketWrapper) {
         this.lastUpdateTimestamp = Date.now();
         this.sockets = this.sockets.filter(s => s !== socket);
+        this.notifyAllConnections();
+    }
+
+    notifyAllConnections() {
         this.sockets.forEach(socket => {
             socket.sender.sendConnectionsMessage(this.sockets.length);
         });
