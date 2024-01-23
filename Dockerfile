@@ -10,4 +10,4 @@ ENV NODE_ENV=production
 COPY --chown=node:node --from=build /build ./
 RUN npm ci --only=production
 EXPOSE 3000
-CMD [ "node", "out/backend.js" ]
+CMD [ "node", "out/backend/backend.js" ]
