@@ -9,7 +9,7 @@ export class MessageSender {
 
     private send(message: StatusMessage) {
         const messageString = JSON.stringify(message);
-        console.log('Sending message: ' + messageString);
+        //console.log('Sending message: ' + messageString);
         this.socket.send(messageString);
     }
 
