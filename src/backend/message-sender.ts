@@ -2,7 +2,9 @@ import * as WebSocket from 'ws';
 import { StatusMessage, State } from '../protocol.js';
 
 export class MessageSender {
+
     private socket: WebSocket;
+
     constructor(socket: WebSocket) {
         this.socket = socket;
     }

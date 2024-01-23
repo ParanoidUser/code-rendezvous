@@ -4,27 +4,27 @@ import http from 'http';
 import * as WebSocket from 'ws';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { ChannelManager } from './wsockets.js';
+import { RendezvousManager } from './rndv-manager.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocket.WebSocketServer({ server: server });
-const channelManager = new ChannelManager(wss);
+const wss = new WebSocket.WebSocketServer({ server });
+const rndvManager = new RendezvousManager(wss);
 
 // Serve static files from the "public" directory
 const publicDir = path.join(__dirname, '../../public');
 app.use(express.static(publicDir));
 
 app.get('/start', function(req, res) {
-    const id = channelManager.createChannel();
+    const id = rndvManager.createRendezvous();
     res.redirect(`/${id}`);
 });
 
 app.get('/:id', function(req, res) {
     const id = req.params.id;
-    if(!channelManager.channelExists(id)) {
+    if(!rndvManager.rendezvousExists(id)) {
         return res.status(404).sendFile(path.join(publicDir, `404.html`));
     }
     res.sendFile(path.join(publicDir, `editor.html`));
