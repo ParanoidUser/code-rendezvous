@@ -23,6 +23,10 @@ class SocketWrapper {
     onClose() {
         this.channel.removeSocket(this);
     }
+
+    close() {
+        this.socket.close();
+    }
 }
 
 class Channel {
@@ -38,7 +42,10 @@ class Channel {
         }
     };
 
+    private lastUpdateTimestamp: number = 0;
+
     addSocket(socket: WebSocket) {
+        this.lastUpdateTimestamp = Date.now();
         const wrapper = new SocketWrapper(socket, this);
         this.sockets.push(wrapper);
         wrapper.sender.sendInitMessage();
@@ -47,6 +54,7 @@ class Channel {
     }
 
     setState(source: SocketWrapper, state: string) {
+        this.lastUpdateTimestamp = Date.now();
         const parsedState = JSON.parse(state);
         this.state = parsedState;
         this.sockets.forEach(socket => {
@@ -57,9 +65,22 @@ class Channel {
     }
 
     removeSocket(socket: SocketWrapper) {
+        this.lastUpdateTimestamp = Date.now();
         this.sockets = this.sockets.filter(s => s !== socket);
         this.sockets.forEach(socket => {
             socket.sender.sendConnectionsMessage(this.sockets.length);
+        });
+    }
+
+    isExpired(): boolean {
+        // 8 hours since last update
+        return Date.now() - this.lastUpdateTimestamp > 1000 * 60 * 60 * 8;
+    }
+
+    closeChannel() {
+        this.sockets.forEach(socket => {
+            socket.sender.sendFailureMessage("Channel closed");
+            socket.close();
         });
     }
 }
@@ -71,6 +92,7 @@ export class ChannelManager {
     constructor(server: WebSocket.Server) {
         this.server = server;
         this.server.on('connection', this.onConnection.bind(this));
+        setInterval(this.clearExpiredChannels.bind(this), 1000 * 60 * 60);
     }
 
     onConnection(ws: WebSocket, req: any) {
@@ -106,7 +128,16 @@ export class ChannelManager {
         return this.channels[id] !== undefined;
     }
 
-    ///////////////////////////////////////////////////////////////////////
+    clearExpiredChannels() {
+        Object.keys(this.channels).forEach(id => {
+            const channel = this.channels[id];
+            if (channel.isExpired()) {
+                console.log("Channel " + id + " expired");
+                channel.closeChannel();
+                this.removeChannel(id);
+            }
+        });
+    }
 
     removeChannel(id: string) {
         delete this.channels[id];
