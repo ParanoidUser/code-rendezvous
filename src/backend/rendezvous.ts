@@ -36,12 +36,12 @@ export class Rendezvous {
     }
 
     setState(source: SocketWrapper, state: string) {
-        this.lastUpdateTimestamp = Date.now();
         const parsedState: State = JSON.parse(state);
         if(Rendezvous.isKeepAliveState(parsedState)) {
             source.sender.sendKeepAliveMessage();
             return;
         }
+        this.lastUpdateTimestamp = Date.now();
         this.state = parsedState;
         this.sockets.forEach(socket => {
             if (socket !== source) {
@@ -62,8 +62,8 @@ export class Rendezvous {
     }
 
     isExpired(): boolean {
-        // 8 hours since last update
-        return Date.now() - this.lastUpdateTimestamp > 1000 * 60 * 60 * 8;
+        // 4 hours since last state update
+        return Date.now() - this.lastUpdateTimestamp > 1000 * 60 * 60 * 4;
     }
 
     close() {
