@@ -1,6 +1,7 @@
+This application is hosted at https://www.code-rendezvous.net
+
 TODO:
 
-* session expiration and channels cleanup (front and back)
-* clean up logging
-* html pages
-* link to home page from editor
+* protect /start from crawlers on backend
+* refactor frontend message processing -> move to Rendezvous class
+* add support for multiple languages
