@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import 'bootstrap';
 import './styles.css';
 import { DOM } from './dom-elements';
 import { Rendezvous } from './rendezvous';
@@ -33,6 +32,8 @@ class EventHandlers {
 $(function () {
     DOM.copyContentButton.on('click', EventHandlers.onCopyContentButtonClick);
     DOM.copyLinkButton.on('click', EventHandlers.onCopyLinkButtonClick);
+
+    
 
     RNDV.updateCoderCount(0);
     RNDV.scheduleUpdateWorker();

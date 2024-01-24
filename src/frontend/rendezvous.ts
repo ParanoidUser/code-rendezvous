@@ -2,12 +2,15 @@ import { EditorWrapper } from "./editor-wrapper";
 import { SocketWrapper } from "./socket-wrapper";
 import { State } from '../protocol';
 import { DOM } from "./dom-elements";
+import { Tooltip } from 'bootstrap';
 
 export class Rendezvous {
     private remoteState: string = '';
     private socket?: SocketWrapper;
     private editor?: EditorWrapper;
     private timer?: any;
+    private statusTooltip = new Tooltip(DOM.statusName[0]);
+    private statusMessage: string = '';
 
     initiateConnection() {
         if (!this.socket) {
@@ -73,15 +76,19 @@ export class Rendezvous {
         }
     }
 
-    showConnectedStatus(connected: boolean, message?: string) {
-        if (connected) {
-            DOM.statusName.attr('title', 'Connected');
-            DOM.statusIcon.addClass('fa-check-circle');
-            DOM.statusIcon.removeClass('fa-exclamation-triangle');
-        } else {
-            DOM.statusName.attr('title', 'Disconnected' + (message ? ':' + message : ''));
-            DOM.statusIcon.removeClass('fa-check-circle');
-            DOM.statusIcon.addClass('fa-exclamation-triangle');            
+    showConnectionStatus(connected: boolean, message?: string) {
+        message = connected ? 'Connected' : (message ? message : 'Disconnected');
+        if(message !== this.statusMessage) {
+            this.statusMessage = message;
+            this.statusTooltip.setContent({ '.tooltip-inner': message });
+        }
+        if (connected && DOM.statusIconDisconnected.is(':visible')) {
+            DOM.statusIconConnected.show();
+            DOM.statusIconDisconnected.hide();
+        } 
+        if(!connected && DOM.statusIconConnected.is(':visible')) {
+            DOM.statusIconConnected.hide();
+            DOM.statusIconDisconnected.show();            
         }
     }
 }

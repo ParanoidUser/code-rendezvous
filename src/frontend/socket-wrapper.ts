@@ -18,7 +18,7 @@ export class SocketWrapper {
     }
 
     onOpen() {
-        this.rndv.showConnectedStatus(true);
+        this.rndv.showConnectionStatus(true);
         console.log('Connection established.');
         this.lastUpdateTimestamp = Date.now();
     }
@@ -37,7 +37,7 @@ export class SocketWrapper {
             console.error('Non-retriable connection error', message.text);
             this.rndv.cancelUpdateWorker();
             this.socket.close();
-            this.rndv.showConnectedStatus(false, message.text);
+            this.rndv.showConnectionStatus(false, message.text);
         } else if (message.type === 'keep-alive') {
             this.lastUpdateTimestamp = Date.now();
         }
@@ -46,14 +46,13 @@ export class SocketWrapper {
     onError(error: Event) {
         console.error('Retriable error:', error);
         this.rndv.clearSocket();
-        this.rndv.showConnectedStatus(false, "Connection error");
+        this.rndv.showConnectionStatus(false, "Connection error");
         this.lastUpdateTimestamp = 0;
     }
 
     onClose() {
         console.log('Connection closed.');
         this.rndv.clearSocket();
-        this.rndv.showConnectedStatus(false, "Connection closed");
         this.lastUpdateTimestamp = 0;
     }
 

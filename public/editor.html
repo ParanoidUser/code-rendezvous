@@ -38,9 +38,10 @@
             <span id="coderCounter">0</span>
           </span>
         </li>
-        <li class="nav-item" title="Disconnected" id="statusName">
+        <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Disconnected" id="statusName">
           <span class="nav-link disabled">
-            <i id="statusIcon" class="fas fa-exclamation-triangle"></i>
+            <i id="statusIconDisconnected" class="fas fa-exclamation-triangle text-danger"></i>
+            <i id="statusIconConnected" class="fas fa-check-circle text-success" style="display: none;"></i>
           </span>
         </li>
       </ul>
