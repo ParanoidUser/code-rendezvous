@@ -45,4 +45,11 @@ export class MessageSender {
         };
         this.send(message);
     }
+
+    sendKeepAliveMessage() {
+        const message: StatusMessage = {
+            type: 'keep-alive'
+        };
+        this.send(message);
+    }
 }

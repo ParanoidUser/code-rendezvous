@@ -1,10 +1,11 @@
 import { Rendezvous } from "./rendezvous";
-import { StatusMessage } from '../protocol';
+import { StatusMessage, keepAliveState } from '../protocol';
 
 export class SocketWrapper {
 
     private socket: WebSocket;
     private rndv: Rendezvous;
+    private lastUpdateTimestamp: number = 0;
 
     constructor(rndv: Rendezvous) {
         this.rndv = rndv;
@@ -19,6 +20,7 @@ export class SocketWrapper {
     onOpen() {
         this.rndv.showConnectedStatus(true);
         console.log('Connection established.');
+        this.lastUpdateTimestamp = Date.now();
     }
 
     onMessage(event: MessageEvent) {
@@ -34,17 +36,21 @@ export class SocketWrapper {
         } else if (message.type === 'failure') {
             console.error('Non-retriable WebSocket error', message.text);
             this.rndv.cancelUpdateWorker();
+        } else if (message.type === 'keep-alive') {
+            this.lastUpdateTimestamp = Date.now();
         }
     }
 
     onError(error: Event) {
         console.error('Retriable error:', error);
         this.rndv.clearSocket();
+        this.lastUpdateTimestamp = 0;
     }
 
     onClose() {
         console.log('Connection closed.');
         this.rndv.clearSocket();
+        this.lastUpdateTimestamp = 0;
     }
 
     isOpen(): boolean {
@@ -53,5 +59,14 @@ export class SocketWrapper {
 
     send(message: string) {
         this.socket.send(message);
+        this.lastUpdateTimestamp = Date.now();
+    }
+
+    keepAlive() {
+        if (this.isOpen()) {
+            if (Date.now() - this.lastUpdateTimestamp > 30000) {
+                this.send(JSON.stringify(keepAliveState));
+            }
+        }
     }
 }

@@ -10,7 +10,8 @@ export interface State {
         main: number;
     };
 }
-export type MessageType = 'init' | 'connections' | 'state' | 'failure';
+
+export type MessageType = 'init' | 'connections' | 'state' | 'failure' | 'keep-alive';
 
 export interface StatusMessage {
     type: MessageType;
@@ -18,3 +19,5 @@ export interface StatusMessage {
     state?: State;
     connections?: number;
 }
+
+export const keepAliveState: State = {'doc': '', 'selection': {'ranges': [], 'main': -1}};

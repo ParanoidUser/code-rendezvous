@@ -51,6 +51,8 @@ export class Rendezvous {
             if (this.remoteState !== strState) {
                 this.socket.send(strState);
                 this.remoteState = strState;
+            } else {
+                this.socket.keepAlive();
             }
         }
     }

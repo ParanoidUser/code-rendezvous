@@ -1,11 +1,15 @@
 import * as WebSocket from 'ws';
-import { State } from '../protocol.js';
+import { State, keepAliveState } from '../protocol.js';
 import { SocketWrapper } from './socket-wrapper.js';
 
 export class Rendezvous {
 
     private static readonly ID_CHARACTER_SET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     private static readonly ID_LENGTH = 6;
+
+    private static isKeepAliveState(state: State): boolean {
+        return !state.doc && state.selection.main === keepAliveState.selection.main;
+    }
 
     readonly id: string;
     private sockets: SocketWrapper[] = [];
@@ -33,7 +37,11 @@ export class Rendezvous {
 
     setState(source: SocketWrapper, state: string) {
         this.lastUpdateTimestamp = Date.now();
-        const parsedState = JSON.parse(state);
+        const parsedState: State = JSON.parse(state);
+        if(Rendezvous.isKeepAliveState(parsedState)) {
+            source.sender.sendKeepAliveMessage();
+            return;
+        }
         this.state = parsedState;
         this.sockets.forEach(socket => {
             if (socket !== source) {
