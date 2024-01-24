@@ -17,6 +17,7 @@ export class SocketWrapper {
     }
 
     onOpen() {
+        this.rndv.showConnectedStatus(true);
         console.log('Connection established.');
     }
 

@@ -10,21 +10,43 @@
 
 <body>
   <div class="container">
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-1 border-bottom">
       <span class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
         <a href="/"><img src="img/logo.png" alt="Code Rendezvous logo" class="me-2" height="32"></a>
-        <span class="fs-4">Java</span>
+        <span>Code Rendezvous</span>
       </span>
 
       <ul class="nav nav-pills">
-        <li class="nav-item"><a href="#" class="nav-link" id="copyLink"><i class="far fa-copy"></i> Copy link</a></li>
-        <li class="nav-item"><a href="#" class="nav-link" id="copyContent"><i class="far fa-copy"></i> Copy content</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="far fa-copy"></i>
+            <span id="copyDropDown">Copy</span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" id="copyLink">Copy URL</a></li>
+            <li><a class="dropdown-item" href="#" id="copyContent">Copy content</a></li>
+          </ul>
         </li>
-        <li class="nav-item"><span class="nav-link disabled" id="coderCounter"></span></li>
+        <li class="nav-item" title="Java" id="languageName">
+          <span class="nav-link disabled">
+            <i id="languageIcon" class="fab fa-java fs-4"></i>
+          </span>
+        </li>
+        <li class="nav-item" title="Coders at rendezvous">
+          <span class="nav-link disabled">
+            <i class="fas fa-users"></i>
+            <span id="coderCounter">0</span>
+          </span>
+        </li>
+        <li class="nav-item" title="Disconnected" id="statusName">
+          <span class="nav-link disabled">
+            <i id="statusIcon" class="fas fa-exclamation-triangle"></i>
+          </span>
+        </li>
       </ul>
     </header>
 
-    <div id="loading">Loading...</div>
+    <div id="loading" class="alert alert-primary" role="alert">Loading...</div>
     <div id="editor"></div>
   </div>
   <script src="bundle.js"></script>

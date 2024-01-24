@@ -19,7 +19,7 @@ export class Rendezvous {
         if (!count) {
             count = 0;
         }
-        DOM.codersCounterDiv.html("Coders: " + count);
+        DOM.codersCounterDiv.html(""+count);
     }
 
     createEditor() {
@@ -57,6 +57,7 @@ export class Rendezvous {
 
     clearSocket() {
         this.socket = undefined;
+        this.showConnectedStatus(false);
     }
 
     scheduleUpdateWorker() {
@@ -68,6 +69,18 @@ export class Rendezvous {
             console.log('Cancelling UpdateWorker');
             clearInterval(this.timer);
             this.timer = undefined;
+        }
+    }
+
+    showConnectedStatus(connected: boolean) {
+        if (connected) {
+            DOM.statusName.attr('title', 'Connected');
+            DOM.statusIcon.addClass('fa-check-circle');
+            DOM.statusIcon.removeClass('fa-exclamation-triangle');
+        } else {
+            DOM.statusName.attr('title', 'Disconnected');
+            DOM.statusIcon.removeClass('fa-check-circle');
+            DOM.statusIcon.addClass('fa-exclamation-triangle');            
         }
     }
 }

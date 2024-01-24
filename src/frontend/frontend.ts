@@ -6,27 +6,33 @@ import { Rendezvous } from './rendezvous';
 
 const RNDV = new Rendezvous();
 
-$(function () {
-
-    DOM.copyContentButton.on('click', async function (event) {
+class EventHandlers {
+    
+    static flashCopyLabel() {
+        DOM.copyDropDown.html('Copied!');
+        setTimeout(() => {
+            DOM.copyDropDown.html('Copy');
+        }, 1000);
+    }
+    
+    static onCopyContentButtonClick(event: JQuery.Event) {
         event.preventDefault();
         const editorContent = RNDV.getEditorContent();
-        await navigator.clipboard.writeText(editorContent);
-        $(this).html('<i class="far fa-copy"></i> Copied!');
-        setTimeout(() => {
-            $(this).html('<i class="far fa-copy"></i> Copy content');
-        }, 1000);
-    });
+        navigator.clipboard.writeText(editorContent);
+        EventHandlers.flashCopyLabel();
+    }
 
-    DOM.copyLinkButton.on('click', async function (event) {
+    static onCopyLinkButtonClick(event: JQuery.Event) {
         event.preventDefault();
         const url = window.location.href;
-        await navigator.clipboard.writeText(url);
-        $(this).html('<i class="far fa-copy"></i> Copied!');
-        setTimeout(() => {
-            $(this).html('<i class="far fa-copy"></i> Copy link');
-        }, 1000);
-    });
+        navigator.clipboard.writeText(url);
+        EventHandlers.flashCopyLabel();
+    }
+}
+
+$(function () {
+    DOM.copyContentButton.on('click', EventHandlers.onCopyContentButtonClick);
+    DOM.copyLinkButton.on('click', EventHandlers.onCopyLinkButtonClick);
 
     RNDV.updateCoderCount(0);
     RNDV.scheduleUpdateWorker();
