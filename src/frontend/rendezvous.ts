@@ -59,7 +59,6 @@ export class Rendezvous {
 
     clearSocket() {
         this.socket = undefined;
-        this.showConnectedStatus(false);
     }
 
     scheduleUpdateWorker() {
@@ -74,13 +73,13 @@ export class Rendezvous {
         }
     }
 
-    showConnectedStatus(connected: boolean) {
+    showConnectedStatus(connected: boolean, message?: string) {
         if (connected) {
             DOM.statusName.attr('title', 'Connected');
             DOM.statusIcon.addClass('fa-check-circle');
             DOM.statusIcon.removeClass('fa-exclamation-triangle');
         } else {
-            DOM.statusName.attr('title', 'Disconnected');
+            DOM.statusName.attr('title', 'Disconnected' + (message ? ':' + message : ''));
             DOM.statusIcon.removeClass('fa-check-circle');
             DOM.statusIcon.addClass('fa-exclamation-triangle');            
         }
