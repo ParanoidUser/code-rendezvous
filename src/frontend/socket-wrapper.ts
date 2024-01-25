@@ -26,20 +26,10 @@ export class SocketWrapper {
     onMessage(event: MessageEvent) {
         const message: StatusMessage = JSON.parse(event.data);
         //console.log('Received:', message);
-
-        if (message.type === 'init') {
-            this.rndv.createEditor();
-        } else if (message.type === 'connections') {
-            this.rndv.updateCoderCount(message.connections);
-        } else if (message.type === 'state') {
-            this.rndv.updateEditorState(message.state);
-        } else if (message.type === 'failure') {
-            console.error('Non-retriable connection error', message.text);
-            this.rndv.cancelUpdateWorker();
-            this.socket.close();
-            this.rndv.showConnectionStatus(false, message.text);
-        } else if (message.type === 'keep-alive') {
+        if (message.type === 'keep-alive') {
             this.lastUpdateTimestamp = Date.now();
+        } else {
+            this.rndv.dispatchStatusMessage(message);
         }
     }
 
@@ -63,6 +53,10 @@ export class SocketWrapper {
     send(message: string) {
         this.socket.send(message);
         this.lastUpdateTimestamp = Date.now();
+    }
+
+    close() {
+        this.socket.close();
     }
 
     keepAlive() {

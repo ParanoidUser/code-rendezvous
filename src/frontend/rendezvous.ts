@@ -1,6 +1,6 @@
 import { EditorWrapper } from "./editor-wrapper";
 import { SocketWrapper } from "./socket-wrapper";
-import { State } from '../protocol';
+import { State, StatusMessage } from '../protocol';
 import { DOM } from "./dom-elements";
 import { Tooltip } from 'bootstrap';
 
@@ -13,24 +13,11 @@ export class Rendezvous {
     private statusMessage: string = '';
     private languageTooltip = new Tooltip(DOM.languageName[0]);
 
-    initiateConnection() {
-        if (!this.socket) {
-            this.socket = new SocketWrapper(this);
-        }
-    }
-
     updateCoderCount(count?: number) {
         if (!count) {
             count = 0;
         }
         DOM.codersCounterDiv.html(""+count);
-    }
-
-    createEditor() {
-        if (!this.editor) {
-            this.editor = new EditorWrapper();
-            DOM.editorLoadingDiv.hide();
-        }
     }
 
     getEditorContent() {
@@ -47,9 +34,30 @@ export class Rendezvous {
         }
     }
 
+    dispatchStatusMessage(message: StatusMessage){
+        if (message.type === 'init') {
+            if (!this.editor) {
+                this.editor = new EditorWrapper();
+                DOM.editorLoadingDiv.hide();
+            }
+        } else if (message.type === 'connections') {
+            this.updateCoderCount(message.connections);
+        } else if (message.type === 'state') {
+            this.updateEditorState(message.state);
+        } else if (message.type === 'failure') {
+            console.error('Non-retriable connection error', message.text);
+            this.cancelUpdateWorker();
+            this.socket?.close();
+            this.showConnectionStatus(false, message.text);
+        }
+    }
+
     checkUpdate() {
-        if (!this.socket || !this.socket.isOpen()) {
-            this.initiateConnection();
+        if (!this.socket) {
+            this.socket = new SocketWrapper(this);
+        } else if (!this.socket.isOpen()) {
+            //still connecting
+            return;
         } else if (this.editor) {
             const strState = this.editor.getStateAsJson();
             if (this.remoteState !== strState) {
