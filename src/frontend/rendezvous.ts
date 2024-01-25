@@ -11,6 +11,7 @@ export class Rendezvous {
     private timer?: any;
     private statusTooltip = new Tooltip(DOM.statusName[0]);
     private statusMessage: string = '';
+    private languageTooltip = new Tooltip(DOM.languageName[0]);
 
     initiateConnection() {
         if (!this.socket) {

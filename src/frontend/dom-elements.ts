@@ -7,7 +7,11 @@ export class DOM {
     static readonly editorDiv = $('#editor');
     static readonly editorLoadingDiv = $('#loading');
     static readonly codersCounterDiv = $('#coderCounter');
+    static readonly codersCounterTooltipHost = $('#codersCounterTooltipHost');
     static readonly statusName = $('#statusName');
     static readonly statusIconConnected = $('#statusIconConnected');
     static readonly statusIconDisconnected = $('#statusIconDisconnected');
+    static readonly languageName = $('#languageName');
+    static readonly languageIcon = $('#languageIcon');
+
 }

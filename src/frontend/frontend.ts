@@ -2,7 +2,9 @@ import $ from 'jquery';
 import './styles.css';
 import { DOM } from './dom-elements';
 import { Rendezvous } from './rendezvous';
+import { Tooltip } from 'bootstrap';
 
+const codersTooltip = new Tooltip(DOM.codersCounterTooltipHost[0]);
 const RNDV = new Rendezvous();
 
 class EventHandlers {
@@ -32,8 +34,6 @@ class EventHandlers {
 $(function () {
     DOM.copyContentButton.on('click', EventHandlers.onCopyContentButtonClick);
     DOM.copyLinkButton.on('click', EventHandlers.onCopyLinkButtonClick);
-
-    
 
     RNDV.updateCoderCount(0);
     RNDV.scheduleUpdateWorker();
