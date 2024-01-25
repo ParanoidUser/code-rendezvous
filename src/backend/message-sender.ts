@@ -1,5 +1,5 @@
 import * as WebSocket from 'ws';
-import { StatusMessage, State } from '../protocol.js';
+import { StatusMessage, State, SupportedLanguage } from '../protocol.js';
 
 export class MessageSender {
 
@@ -15,9 +15,10 @@ export class MessageSender {
         this.socket.send(messageString);
     }
 
-    sendInitMessage() {
+    sendInitMessage(language: SupportedLanguage) {
         const message: StatusMessage = {
-            type: 'init'
+            type: 'init',
+            text: language
         };
         this.send(message);
     }

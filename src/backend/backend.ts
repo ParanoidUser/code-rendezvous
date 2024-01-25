@@ -5,6 +5,7 @@ import * as WebSocket from 'ws';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { RendezvousManager } from './rndv-manager.js';
+import { SupportedLanguage } from '../protocol.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,7 +19,8 @@ const publicDir = path.join(__dirname, '../../public');
 app.use(express.static(publicDir));
 
 app.get('/start', function(req, res) {
-    const id = rndvManager.createRendezvous();
+    const lang = (req.query.lang as SupportedLanguage) || 'Plain Text';    
+    const id = rndvManager.createRendezvous(lang);
     res.redirect(`/${id}`);
 });
 

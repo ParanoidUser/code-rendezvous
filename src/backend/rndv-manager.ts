@@ -1,6 +1,7 @@
 import * as WebSocket from 'ws';
 import { Rendezvous } from './rendezvous.js';
 import { MessageSender } from './message-sender.js';
+import { SupportedLanguage } from '../protocol.js';
 
 export class RendezvousManager {
 
@@ -24,8 +25,8 @@ export class RendezvousManager {
         }
     }
 
-    createRendezvous(): string {
-        const rndv = new Rendezvous();
+    createRendezvous(language: SupportedLanguage): string {
+        const rndv = new Rendezvous(language);
         this.rndvs[rndv.id] = rndv;
         return rndv.id;
     }

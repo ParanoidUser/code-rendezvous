@@ -1,5 +1,5 @@
 import * as WebSocket from 'ws';
-import { State, keepAliveState } from '../protocol.js';
+import { State, keepAliveState, SupportedLanguage } from '../protocol.js';
 import { SocketWrapper } from './socket-wrapper.js';
 
 export class Rendezvous {
@@ -15,20 +15,22 @@ export class Rendezvous {
     private sockets: SocketWrapper[] = [];
     private state?: State;
     private lastUpdateTimestamp: number = Date.now();
+    private language: SupportedLanguage;
 
-    constructor() {
+    constructor(language: SupportedLanguage) {
         let iid = '';
         for (let i = 0; i < Rendezvous.ID_LENGTH; i++) {
             iid += Rendezvous.ID_CHARACTER_SET.charAt(
                 Math.floor(Math.random() *  Rendezvous.ID_CHARACTER_SET.length));
         }
         this.id = iid;
+        this.language = language;
     }
 
     addSocket(socket: WebSocket) {
         const wrapper = new SocketWrapper(socket, this);
         this.sockets.push(wrapper);
-        wrapper.sender.sendInitMessage();
+        wrapper.sender.sendInitMessage(this.language);
         if (this.state) {
             wrapper.sender.sendStateMessage(this.state);
         }

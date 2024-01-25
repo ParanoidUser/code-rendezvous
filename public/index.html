@@ -11,9 +11,28 @@
     <div class="d-flex flex-column justify-content-center align-items-center vh-100 text-center">
         <img src="img/logo.png" alt="Code Rendezvous logo" class="logo">
         <h1>Welcome to Code Rendezvous!</h1>
-        <p>This is a place where you can code together</p>
-        <button class="btn btn-success" onclick="window.location.href='/start'">Get Started</button>
+        <p>
+            This is a place where you can collaborate on a piece of code<br />
+            with someone you are interviewing or working with.
+        </p>
+        <p>
+            Open an editor by picking one of the supported languages:<br />
+            <a href="#" onclick="start('Java')">Java</a>,
+            <a href="#" onclick="start('JavaScript')">JavaScript</a>,
+            <a href="#" onclick="start('HTML')">HTML</a>,
+            <a href="#" onclick="start('CSS')">CSS</a>
+            or just go with
+            <a href="#" onclick="start()">plain text</a>.
+        </p>
+        <p>
+            And don't forget to share the editor link with your vis-à-vis!
+        </p>
     </div>
 </body>
+<script>
+    function start(lang) {
+        window.location.href = '/start' + (lang ? '?lang=' + lang : '');
+    }
+</script>
 
 </html>

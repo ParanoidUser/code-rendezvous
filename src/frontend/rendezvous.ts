@@ -37,8 +37,11 @@ export class Rendezvous {
     dispatchStatusMessage(message: StatusMessage){
         if (message.type === 'init') {
             if (!this.editor) {
-                this.editor = new EditorWrapper();
+                this.editor = new EditorWrapper(message.text);
                 DOM.editorLoadingDiv.hide();
+                DOM.languageIcon.removeClass('fa fa-question');
+                DOM.languageIcon.addClass(this.editor.languageIconClasses);
+                this.languageTooltip.setContent({ '.tooltip-inner': 'Syntax: ' + this.editor.language });
             }
         } else if (message.type === 'connections') {
             this.updateCoderCount(message.connections);
