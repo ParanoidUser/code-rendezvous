@@ -1,9 +1,5 @@
 @import 'bootstrap/dist/css/bootstrap.css';
 
-.cm-editor {
-  min-height: 500px;
-}
-
 .cm-focused {
   outline: none !important;
 }

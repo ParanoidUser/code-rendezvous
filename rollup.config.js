@@ -24,6 +24,7 @@ export default {
     resolve(), // For resolving node_modules
     commonjs(), // Convert CommonJS modules to ES6
     babel({ // Transpile to ES5
+      babelHelpers: 'bundled',
       exclude: 'node_modules/**',
       presets: ['@babel/preset-env']
     })
