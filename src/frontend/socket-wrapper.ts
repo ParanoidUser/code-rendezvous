@@ -3,18 +3,21 @@ import { StatusMessage, keepAliveState } from '../protocol';
 
 export class SocketWrapper {
 
-    private socket: WebSocket;
+    private socket?: WebSocket;
     private rndv: Rendezvous;
     private lastUpdateTimestamp: number = 0;
 
     constructor(rndv: Rendezvous) {
         this.rndv = rndv;
         console.log('Establishing connection...');
-        this.socket = new WebSocket(window.location.href.replace('http', 'ws'));
-        this.socket.onopen = this.onOpen.bind(this);
-        this.socket.onmessage = this.onMessage.bind(this);
-        this.socket.onerror = this.onError.bind(this);
-        this.socket.onclose = this.onClose.bind(this);
+        const wrapper = this;
+        setTimeout(function () {
+            wrapper.socket = new WebSocket(window.location.href.replace('http', 'ws'));
+            wrapper.socket.onopen = wrapper.onOpen.bind(wrapper);
+            wrapper.socket.onmessage = wrapper.onMessage.bind(wrapper);
+            wrapper.socket.onerror = wrapper.onError.bind(wrapper);
+            wrapper.socket.onclose = wrapper.onClose.bind(wrapper);
+        }, 1);
     }
 
     onOpen() {
@@ -47,15 +50,24 @@ export class SocketWrapper {
     }
 
     isOpen(): boolean {
-        return this.socket.readyState === this.socket.OPEN;
+        if(!this.socket) return false;
+        return this.socket && this.socket.readyState === this.socket.OPEN;
     }
 
     send(message: string) {
+        if (!this.socket || !this.isOpen()) {
+            console.error('Socket is not open');
+            return;
+        }
         this.socket.send(message);
         this.lastUpdateTimestamp = Date.now();
     }
 
     close() {
+        if (!this.socket) {
+            console.error('Socket is not open');
+            return;
+        }
         this.socket.close();
     }
 
