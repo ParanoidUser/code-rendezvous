@@ -39,6 +39,7 @@ export class Rendezvous {
             if (!this.editor) {
                 this.editor = new EditorWrapper(message.text);
                 DOM.editorLoadingDiv.hide();
+                DOM.statusBar.show();
                 DOM.languageIcon.removeClass('fa fa-question');
                 DOM.languageIcon.addClass(this.editor.languageIconClasses);
                 this.languageTooltip.setContent({ '.tooltip-inner': 'Syntax: ' + this.editor.language });

@@ -13,10 +13,9 @@
     <header class="d-flex flex-wrap justify-content-center py-3 mb-1 border-bottom">
       <span class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
         <a href="/"><img src="img/logo.png" alt="Code Rendezvous logo" class="me-2" height="32"></a>
-        <span class="fs-5">Code Rendezvous</span>
+        <span class="fs-5">Code Rendezvous <i id="loading" class="fas fa-spinner spinner ms-2"></i></span>
       </span>
-
-      <ul class="nav nav-pills">
+      <ul class="nav nav-pills" id="statusBar" style="display: none;">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="far fa-copy"></i>
@@ -47,8 +46,8 @@
       </ul>
     </header>
 
-    <div id="loading" class="alert alert-primary" role="alert">Loading...</div>
     <div id="editor"></div>
+
   </div>
   <script src="bundle.js"></script>
 </body>
