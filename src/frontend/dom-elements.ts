@@ -9,7 +9,7 @@ export class DOM {
     static readonly codersCounterDiv = $('#coderCounter');
     static readonly codersCounterTooltipHost = $('#codersCounterTooltipHost');
     static readonly statusName = $('#statusName');
-    static readonly statusBar = $('#statusBar');
+    static readonly containerDiv = $('#containerDiv');
     static readonly statusIconConnected = $('#statusIconConnected');
     static readonly statusIconDisconnected = $('#statusIconDisconnected');
     static readonly languageName = $('#languageName');

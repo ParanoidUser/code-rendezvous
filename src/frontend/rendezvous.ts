@@ -39,8 +39,7 @@ export class Rendezvous {
             if (!this.editor) {
                 this.editor = new EditorWrapper(message.text);
                 DOM.editorLoadingDiv.hide();
-                DOM.statusBar.show();
-                DOM.languageIcon.removeClass('fa fa-question');
+                DOM.containerDiv.show();
                 DOM.languageIcon.addClass(this.editor.languageIconClasses);
                 this.languageTooltip.setContent({ '.tooltip-inner': 'Syntax: ' + this.editor.language });
             }
@@ -95,11 +94,10 @@ export class Rendezvous {
             this.statusMessage = message;
             this.statusTooltip.setContent({ '.tooltip-inner': message });
         }
-        if (connected && DOM.statusIconDisconnected.is(':visible')) {
+        if (connected) {
             DOM.statusIconConnected.show();
             DOM.statusIconDisconnected.hide();
-        } 
-        if(!connected && DOM.statusIconConnected.is(':visible')) {
+        } else {
             DOM.statusIconConnected.hide();
             DOM.statusIconDisconnected.show();            
         }

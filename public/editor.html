@@ -9,13 +9,23 @@
 </head>
 
 <body>
-  <div class="container">
+  <div id="loading">
+    <div class="d-flex flex-column justify-content-center align-items-center vh-100 text-center">
+      <img src="img/logo.png" alt="Code Rendezvous logo" class="logo">
+      <h1>Code Rendezvous</h1>
+      <h4>Loading <i class="fas fa-spinner spinner ms-2"></i></h4>
+    </div>
+  </div>
+
+  <div id="containerDiv" class="container" style="display: none;">
     <header class="d-flex flex-wrap justify-content-center py-3 mb-1 border-bottom">
       <span class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-        <a href="/"><img src="img/logo.png" alt="Code Rendezvous logo" class="me-2" height="32"></a>
-        <span class="fs-5">Code Rendezvous <i id="loading" class="fas fa-spinner spinner ms-2"></i></span>
+        <a href="/">
+          <img src="img/logo.png" alt="Code Rendezvous logo" class="me-2" height="32">
+        </a>
+        <span class="fs-5">Code Rendezvous</span>
       </span>
-      <ul class="nav nav-pills" id="statusBar" style="display: none;">
+      <ul class="nav nav-pills">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="far fa-copy"></i>
@@ -26,12 +36,14 @@
             <li><a class="dropdown-item" href="#" id="copyContent">Copy content</a></li>
           </ul>
         </li>
-        <li class="nav-item" id="languageName" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Syntax: ?" >
+        <li class="nav-item" id="languageName" data-bs-toggle="tooltip" data-bs-placement="bottom"
+          data-bs-title="Syntax: ?">
           <span class="nav-link disabled">
-            <i id="languageIcon" class="fa fa-question"></i>
+            <i id="languageIcon"></i>
           </span>
         </li>
-        <li class="nav-item" id="codersCounterTooltipHost" data-bs-toggle="tooltip" data-bs-title="Coders at rendezvous">
+        <li class="nav-item" id="codersCounterTooltipHost" data-bs-toggle="tooltip"
+          data-bs-title="Coders at rendezvous">
           <span class="nav-link disabled">
             <i class="fas fa-users"></i>
             <span id="coderCounter">0</span>
