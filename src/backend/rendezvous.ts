@@ -5,7 +5,7 @@ import { SocketWrapper } from './socket-wrapper.js';
 export class Rendezvous {
 
     private static readonly ID_CHARACTER_SET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    private static readonly ID_LENGTH = 6;
+    private static readonly ID_LENGTH = 8;
 
     private static isKeepAliveState(state: State): boolean {
         return !state.doc && state.selection.main === keepAliveState.selection.main;
@@ -21,25 +21,26 @@ export class Rendezvous {
         let iid = '';
         for (let i = 0; i < Rendezvous.ID_LENGTH; i++) {
             iid += Rendezvous.ID_CHARACTER_SET.charAt(
-                Math.floor(Math.random() *  Rendezvous.ID_CHARACTER_SET.length));
+                Math.floor(Math.random() * Rendezvous.ID_CHARACTER_SET.length));
         }
         this.id = iid;
         this.language = language;
     }
 
-    addSocket(socket: WebSocket) {
-        const wrapper = new SocketWrapper(socket, this);
+    addSocket(socket: WebSocket, remoteAddress: string) {
+        const wrapper = new SocketWrapper(socket, this, remoteAddress);
         this.sockets.push(wrapper);
         wrapper.sender.sendInitMessage(this.language);
         if (this.state) {
             wrapper.sender.sendStateMessage(this.state);
         }
         this.notifyAllConnections();
+        console.log("Connection to " + this.id + " from " + wrapper.remoteAddress + " (" + wrapper.id +") opened");
     }
 
     setState(source: SocketWrapper, state: string) {
         const parsedState: State = JSON.parse(state);
-        if(Rendezvous.isKeepAliveState(parsedState)) {
+        if (Rendezvous.isKeepAliveState(parsedState)) {
             source.sender.sendKeepAliveMessage();
             return;
         }
@@ -55,6 +56,7 @@ export class Rendezvous {
     removeSocket(socket: SocketWrapper) {
         this.sockets = this.sockets.filter(s => s !== socket);
         this.notifyAllConnections();
+        console.log("Connection to " + this.id + " from " + socket.remoteAddress + " (" + socket.id +") closed. " + this.sockets.length + " connections remaining");
     }
 
     notifyAllConnections() {
@@ -66,6 +68,11 @@ export class Rendezvous {
     isExpired(): boolean {
         // 4 hours since last state update
         return Date.now() - this.lastUpdateTimestamp > 1000 * 60 * 60 * 4;
+    }
+
+    isIdle(): boolean {
+        // 30 mins since last state update
+        return Date.now() - this.lastUpdateTimestamp > 1000 * 60 * 30;
     }
 
     close() {

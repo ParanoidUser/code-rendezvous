@@ -16,8 +16,7 @@ export class RendezvousManager {
         const rndvId = request.url.split('/')[1];
         const rndv = this.rndvs[rndvId];
         if (rndv) {
-            rndv.addSocket(ws);
-            console.log("Connected " + request.url);
+            rndv.addSocket(ws, request.connection.remoteAddress);
         } else {
             new MessageSender(ws).sendFailureMessage("Rendezvous not found");
             ws.close();
@@ -28,6 +27,7 @@ export class RendezvousManager {
     createRendezvous(language: SupportedLanguage): string {
         const rndv = new Rendezvous(language);
         this.rndvs[rndv.id] = rndv;
+        console.log("Rendezvous " + rndv.id + " started");
         return rndv.id;
     }
 
@@ -36,17 +36,34 @@ export class RendezvousManager {
     }
 
     clearExpiredRendezvous() {
+        const stats = new Statistics();
         Object.keys(this.rndvs).forEach(id => {
             const rndv = this.rndvs[id];
             if (rndv.isExpired()) {
                 console.log("Rendezvous " + id + " expired");
                 rndv.close();
                 this.removeRendezvous(id);
+                stats.inc('expired');
+            } else if (rndv.isIdle()) {
+                stats.inc('idle');
+            } else {
+                stats.inc('active');
             }
         });
+        console.log("Rendezvous stats: " + JSON.stringify(stats.stats));
     }
 
     removeRendezvous(id: string) {
         delete this.rndvs[id];
+    }
+}
+
+class Statistics {
+    readonly stats: Record<string, number> = {};
+    inc(key: string) {
+        if (!this.stats[key]) {
+            this.stats[key] = 0;
+        }
+        this.stats[key]++;
     }
 }
