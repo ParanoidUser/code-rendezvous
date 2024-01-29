@@ -5,6 +5,7 @@ export class DOM {
     static readonly copyLinkButton = $('#copyLink');
     static readonly copyDropDown = $('#copyDropDown');
     static readonly editorDiv = $('#editor');
+    static readonly headerDiv = $('#header');
     static readonly editorLoadingDiv = $('#loading');
     static readonly codersCounterDiv = $('#coderCounter');
     static readonly codersCounterTooltipHost = $('#codersCounterTooltipHost');

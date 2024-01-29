@@ -29,12 +29,21 @@ class EventHandlers {
         navigator.clipboard.writeText(url);
         EventHandlers.flashCopyLabel();
     }
+
+    static onResize() {
+        var headerHeight = DOM.headerDiv.outerHeight(true);
+        headerHeight = (headerHeight ? headerHeight : 0) + 5;
+        DOM.editorDiv.css('height', `calc(100vh - ${headerHeight}px)`);
+    }
 }
 
 $(function () {
     DOM.copyContentButton.on('click', EventHandlers.onCopyContentButtonClick);
     DOM.copyLinkButton.on('click', EventHandlers.onCopyLinkButtonClick);
+    $(window).on('resize', EventHandlers.onResize);
+    DOM.containerDiv.on('show', EventHandlers.onResize);
 
     RNDV.updateCoderCount(0);
     RNDV.scheduleUpdateWorker();
+    EventHandlers.onResize();
 });

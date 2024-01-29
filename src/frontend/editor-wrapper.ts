@@ -50,7 +50,8 @@ export class EditorWrapper {
             selection: {
                 anchor: editorState.selection.ranges[0].anchor,
                 head: editorState.selection.ranges[0].head
-            }
+            },
+            scrollIntoView: true
         });
     }
 

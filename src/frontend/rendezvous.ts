@@ -40,6 +40,7 @@ export class Rendezvous {
                 this.editor = new EditorWrapper(message.text);
                 DOM.editorLoadingDiv.hide();
                 DOM.containerDiv.show();
+                DOM.containerDiv.trigger("show");
                 DOM.languageIcon.addClass(this.editor.languageIconClasses);
                 this.languageTooltip.setContent({ '.tooltip-inner': 'Syntax: ' + this.editor.language });
             }
