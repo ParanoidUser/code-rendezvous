@@ -16,7 +16,9 @@ export class RendezvousManager {
         const rndvId = request.url.split('/')[1];
         const rndv = this.rndvs[rndvId];
         if (rndv) {
-            rndv.addSocket(ws, request.connection.remoteAddress);
+            const forwarded = request.headers['x-forwarded-for'];
+            const ip = forwarded ? forwarded.split(/,/)[0] : request.connection.remoteAddress;
+            rndv.addSocket(ws, ip);
         } else {
             new MessageSender(ws).sendFailureMessage("Rendezvous not found");
             ws.close();
