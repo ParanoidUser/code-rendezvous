@@ -6,10 +6,11 @@ import { SupportedLanguage } from '../protocol.js';
 export class RendezvousManager {
 
     private rndvs: Record<string, Rendezvous> = {};
+    private loggedStats: string = '';
 
     constructor(server: WebSocket.Server) {
         server.on('connection', this.onConnection.bind(this));
-        setInterval(this.clearExpiredRendezvous.bind(this), 1000 * 60 * 60);
+        setInterval(this.clearExpiredRendezvous.bind(this), 1000 * 60);
     }
 
     onConnection(ws: WebSocket, request: any) {
@@ -29,7 +30,7 @@ export class RendezvousManager {
     createRendezvous(language: SupportedLanguage): string {
         const rndv = new Rendezvous(language);
         this.rndvs[rndv.id] = rndv;
-        console.log("Rendezvous " + rndv.id + " started");
+        console.log("Rendezvous " + rndv.id + "/" + language + "/ started");
         return rndv.id;
     }
 
@@ -52,7 +53,11 @@ export class RendezvousManager {
                 stats.inc('active');
             }
         });
-        console.log("Rendezvous stats: " + JSON.stringify(stats.stats));
+        const statsStr = JSON.stringify(stats.stats);
+        if (statsStr !== this.loggedStats) {
+            this.loggedStats = statsStr;
+            console.log("Rendezvous stats: " + statsStr);
+        }
     }
 
     removeRendezvous(id: string) {

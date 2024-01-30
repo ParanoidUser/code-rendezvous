@@ -16,6 +16,7 @@ export class Rendezvous {
     private state?: State;
     private lastUpdateTimestamp: number = Date.now();
     private language: SupportedLanguage;
+    private initialized = false;
 
     constructor(language: SupportedLanguage) {
         let iid = '';
@@ -36,6 +37,7 @@ export class Rendezvous {
         }
         this.notifyAllConnections();
         console.log("Connection to " + this.id + " from " + wrapper.remoteAddress + " (" + wrapper.id +") opened");
+        this.initialized = true;
     }
 
     setState(source: SocketWrapper, state: string) {
@@ -66,13 +68,13 @@ export class Rendezvous {
     }
 
     isExpired(): boolean {
-        // 4 hours since last state update
-        return Date.now() - this.lastUpdateTimestamp > 1000 * 60 * 60 * 4;
+        // 4 hours since last state update for initialized rendezvous and 5 mins for uninitialized
+        const lifetime = Date.now() - this.lastUpdateTimestamp;
+        return this.initialized ? lifetime > 1000 * 60 * 60 * 4 : lifetime > 1000 * 60 * 5;
     }
 
     isIdle(): boolean {
-        // 30 mins since last state update
-        return Date.now() - this.lastUpdateTimestamp > 1000 * 60 * 30;
+        return this.sockets.length == 0 || Date.now() - this.lastUpdateTimestamp > 1000 * 60 * 30;
     }
 
     close() {
