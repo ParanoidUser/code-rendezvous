@@ -4,6 +4,10 @@
   outline: none !important;
 }
 
+.cm-scroller {
+  overflow: visible !important;
+}
+
 .logo {
   width: 100px;
   height: 100px;
